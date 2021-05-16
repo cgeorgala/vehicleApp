@@ -1,0 +1,378 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Vehicle Tranfer App ",
+      "description": "This is an application that will perform transfer of vehicles between users"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Users",
+        "description": "API for users"
+      },
+      {
+        "name": "Applications",
+        "description": "API for applications"
+      },
+      {
+        "name": "Vehicles",
+        "description": "API for vehicles"
+      }
+    ],
+    "schemes": ["http", "https"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+      "/addUser": {
+        "post": {
+          "tags": ["Users"],
+          "summary": "Add new user in the system",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "in":"body",
+            "name":"body",
+            "description":"User that will be added to the system",
+            "required":true,
+            "schema": {
+                "$ref": "#/definitions/User"
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "405": {
+              "description": "Invalid Input"
+            }
+          }
+        }
+      },
+      "/loginUser": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Login user in the system",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[
+            {
+              "name":"username",
+              "in":"query",
+              "type":"string",
+              "description":"Username for login"
+            },
+            {
+              "name":"password",
+              "in":"query",
+              "type":"string",
+              "description":"Password for login"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "400": {
+              "description": "Invalid username and/or password"
+            }
+          }
+        }
+      },
+      "/logoutUser": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Logout user from the system",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            }
+          }
+        }
+      },
+      "/addApplication": {
+        "post": {
+          "tags": ["Applications"],
+          "summary": "Add a new application",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "in":"body",
+            "name":"body",
+            "description":"Application that will be added to the system",
+            "required":true,
+            "schema": {
+                "$ref": "#/definitions/Application"
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "405": {
+              "description": "Invalid Input"
+            }
+          }
+        }
+      },
+      "/findApplicationByStatus": {
+        "get": {
+          "tags": ["Applications"],
+          "summary": "Find application by status",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "name":"status",
+            "in":"query",
+            "type":"string",
+            "enum":["In Progress","Pending", "Completed", "Rejected"],
+            "default":"Pending",
+            "description":"Search application based on status",
+            "required":true
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "schema": {
+                "type":"array",
+                "items":{
+                  "$ref": "#/definitions/Application"
+                }
+              }
+            },
+            "400":{
+              "description": "Invalid search key"
+            }
+          }
+        }
+      },
+      "/findApplicationbyUser": {
+        "get": {
+          "tags": ["Applications"],
+          "summary": "Find applications of current user",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "schema": {
+                "type":"array",
+                "items":{
+                  "$ref": "#/definitions/Application"
+                }
+              }
+            },
+            "400":{
+              "description": "Invalid search id"
+            }
+          }
+        }
+      },
+      "/editApplication": {
+        "put": {
+          "tags": ["Applications"],
+          "summary": "Edit content of an application",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "in":"body",
+            "name":"body",
+            "description":"Application that will be updated in the system",
+            "required":true,
+            "schema": {
+                "$ref": "#/definitions/Application"
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "405": {
+              "description": "Invalid Input"
+            }
+          }
+        }
+      },
+      "/addVehicle": {
+        "post": {
+          "tags": ["Vehicles"],
+          "summary": "Add a new vehicle",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "in":"body",
+            "name":"body",
+            "description":"Vehicle that will be added to the system",
+            "required":true,
+            "schema": {
+                "$ref": "#/definitions/Vehicle"
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "405": {
+              "description": "Invalid Input"
+            }
+          }
+        }
+      },
+      "/findVehicle": {
+        "get": {
+          "tags": ["Vehicles"],
+          "summary": "Find information of a vehicle",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "name":"vehicle number",
+            "in":"query",
+            "type":"string",
+            "description":"Search a vehicle based on its number",
+            "required":true
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "schema": {
+                "$ref": "#/definitions/Vehicle"
+              }
+            },
+            "400": {
+                "description": "Invalid vehicle number"
+              }
+          }
+        }
+      },
+      "/editVehicle": {
+        "put": {
+          "tags": ["Vehicles"],
+          "summary": "Edit information of a vehicle",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[{
+            "in":"body",
+            "name":"body",
+            "description":"Vehicle that will be updated in the system",
+            "required":true,
+            "schema": {
+                "$ref": "#/definitions/Vehicle"
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "405": {
+              "description": "Invalid Input"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "User": {
+        "required": ["name", "surname", "email", "username", "password"],
+        "properties": {
+          "userID": {
+            "type": "integer",
+            "format": "int32",
+            "uniqueItems": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role of user",
+            "enum": ["citizen", "employee"]
+          },
+          "position": {
+            "type": "string"
+          },
+          "registrationCode": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Application": {
+        "required": ["sellerCode", "buyerCode", "vehicleNum"],
+        "properties": {
+          "appID": {
+            "type": "integer",
+            "format": "int32",
+            "uniqueItems": true
+          },
+          "employeeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sellerCode": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "buyerCode": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "vehicleNum": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of application",
+            "enum": ["In Progress", "Pending", "Completed", "Rejected"]
+          }
+        }
+      },
+      "Vehicle": {
+        "required": ["vehicleNum", "certificateDate", "type"],
+        "properties": {
+          "vehicleID": {
+              "type": "integer",
+              "format": "int32",
+              "uniqueItems": true
+            },
+            "vehicleNum": {
+              "type": "string"
+            },
+            "certificateDate": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": {
+              "type": "string",
+              "description": "Type of vehicle",
+              "enum": ["Car", "Motorcycle", "Truck", "Boat"]
+            }
+        }
+      }
+    }
+}
