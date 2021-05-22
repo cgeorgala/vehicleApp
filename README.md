@@ -1,29 +1,30 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+### Introduction ###
 
-### What is this repository for? ###
+* Vehicle Transfer Application
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Setup ###
 
-### How do I get set up? ###
+* Manually Install node.js
+* Manually Install mongodb
+** Database: vehicleTranfer
+** Collections: applications, users, vehicles
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* npm init
+* npm start
 
-### Contribution guidelines ###
+### How to run ###
 
-* Writing tests
-* Code review
-* Other guidelines
+Check all possible endpoints in swagger: 
+* http://localhost:8000/api-docs/#/
 
-### Who do I talk to? ###
+Available "GET" endpoints:
+* Home page http://localhost:8000/
+* Register page http://localhost:8000/users/addUser
+* Login page http://localhost:8000/users/loginUser
+* http://localhost:8000/users/logoutUser
+* http://localhost:8000/vehicles/findVehicle
+* http://localhost:8000/applications/findApplicationByStatus
+* http://localhost:8000/applications/findApplicationByUser
 
-* Repo owner or admin
-* Other community or team contact
