@@ -28,3 +28,8 @@ Available "GET" endpoints:
 * http://localhost:8000/applications/findApplicationByStatus
 * http://localhost:8000/applications/findApplicationByUser
 
+
+### Useful information ###
+Postgres
+* superuser/ postgres
+* port number the server listens on: 5432

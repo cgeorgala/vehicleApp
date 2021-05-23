@@ -11,12 +11,14 @@ router.get('/findApplicationByStatus',(req,res)=>
 {
     console.log(`Find application by status GET handling`);
     res.send(`Find application by status in vehicleTransferApp!`);
+    //getApplByStatus
 });
 
 router.get('/findApplicationByUser',(req,res)=>
 {
     console.log(`Find application by user GET handling`);
     res.send(`Find application by user in vehicleTransferApp!`);
+    //getApplByUser
 });
 
 router.put('/editAppication',(req,res)=>

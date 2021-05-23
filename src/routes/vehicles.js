@@ -11,6 +11,7 @@ router.get('/findVehicle',(req,res)=>
 {
     console.log(`Vehicle GET handling`);
     res.send(`Find vehicle in vehicleTransferApp!`);
+    //getApplByVehicle
 });
 
 router.put('/editVehicle',(req,res)=>

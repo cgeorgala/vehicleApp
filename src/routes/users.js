@@ -12,6 +12,7 @@ router.get('/loginUser',(req,res)=>
 {
     console.log(`Login GET handling`);
     res.render('login');
+    //getPassByUsername
 });
 
 //Register handling

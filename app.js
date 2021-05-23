@@ -1,30 +1,19 @@
 process.title = 'vehicle_backend';
 const express = require('express');
-// const mongoose = require('mongoose');
 const expressEjsLayout = require('express-ejs-layouts')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
-const applicationsSchema = require('./src/models/applicationsModel');
-const usersSchema = require('./src/models/usersModel');
-const vehiclesSchema = require('./src/models/vehiclesModel');
+// const applicationsSchema = require('./src/models/applicationsModel');
+// const usersSchema = require('./src/models/usersModel');
+// const vehiclesSchema = require('./src/models/vehiclesModel');
+const pg = require('pg');
+
+// Project configuration
+const config = require('./src/config.json');
 
 const router = express.Router();
 const app = express();
 const PORT = 8000;
-
-// Create schema for each table of db
-// const User = mongoose.model('User', usersSchema);
-// const Application = mongoose.model('Application', applicationsSchema);
-// const Vehicle = mongoose.model('Vehicle', vehiclesSchema);
-
-// Set mongo connection
-// mongoose.Promise = global.Promise;
-// mongoose.connect('mongodb://localhost/vehicleTranfer', {
-//     useNewUrlParser:true,
-//     useUnifiedTopology:true
-// })
-// .then(() => console.log('Connected to mongodb...'))
-// .catch((err)=> console.log(err));
 
 //Setup EJS
 global.__basedir = __dirname;
