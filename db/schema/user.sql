@@ -1,14 +1,16 @@
 -- USER  table
 
-CREATE TABLE user (
+CREATE TYPE usr_role AS ENUM ('citizen', 'employee');
+
+CREATE TABLE users(
   id               uuid NOT NULL DEFAULT uuid_generate_v4(),
-  user_id          integer(16),
+  user_id          int,
   first_name       character varying(255) NOT NULL,
   last_name        character varying(255) NOT NULL,
   email            character varying(255) NOT NULL,
   username         character varying(20) NOT NULL,
   password         character varying(20) NOT NULL,
-  role             enum('citizen', 'employee') NOT NULL,
+  role             usr_role NOT NULL,
   position         character varying(50),
   registrationCode character varying(255),
 

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { Pool } = require('pg');
-const { db }  = require('./config.json');
+const { db }  = require('../config.json');
 
 // Getting password from db-pass.txt file
 // This file should be gitignored and chmod chmod protected
@@ -13,7 +13,7 @@ const PG_PASSWORD = fs.readFileSync(DB_PASS_FILEPATH, 'utf8').trim();
 
 
 // Creating a thread pool for querying the database with
-const DB_POOL = new Pool({
+const db_pool = new Pool({
   host: db.host,
   user: db.user,
   database: db.database,
@@ -22,25 +22,50 @@ const DB_POOL = new Pool({
   max: 20,
 });
 
-// Get password by username, to login
-const GET_PASS_BY_USERNAME = `
-  SELECT
-    password
-  FROM user
-  WHERE username = $1::character
+const postVehicleQuery = `
+  INSERT INTO vehicles (
+    vehicle_num, certif_date, type )
+  VALUES(
+    $1, $2, $3)
 `;
-function getPassByUsername(usrname) 
+
+function postNewVehicle(req, callback) 
 {
-  DB_POOL.query(GET_PASS_BY_USERNAME, [usrname], (err, result) => {
-    if (err) {
-      return callback(err, null);
-    }
-    return callback(null, result.rows);
+  db_pool.query(postVehicleQuery, 
+    [req.body.vehicle_num, req.body.certif_date, req.body.vehicle_type], 
+    (err, result) => {
+      console.log(err, result);
+      if (err) {
+        return callback(err, null);
+      }
+      else{
+        return callback(null, result);
+      }
   });
 }
 
-// Get application by status
-const GET_APPL_BY_STATUS = `
+// Get vehicle by vehicle plates number
+const getVehicleQuery = `
+  SELECT
+    id
+  FROM vehicles
+  WHERE vehicle_num = $1
+`;
+
+function getVehiclebyNum(vehicleNum, callback) 
+{
+  db_pool.query(getVehicleQuery, 
+    [vehicleNum], 
+    (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      return callback(null, result.rows[0].id);
+  });
+}
+
+// Edit vehicle
+const putVehicleQuery = `
   SELECT
     v.vehicle_num as "vehicleNum",
     u.registrationCode as "sellerCode",
@@ -53,7 +78,7 @@ const GET_APPL_BY_STATUS = `
   INNER JOIN vehicle v ON a.vehicle_id = v.id
   WHERE a.status = 'Pending'
 `;
-function getApplByStatus(callback) 
+function putVehicle(putVehicleQuery) 
 {
   DB_POOL.query(GET_APPL_BY_STATUS, (err, result) => {
     if (err) {
@@ -63,57 +88,8 @@ function getApplByStatus(callback)
   });
 }
 
-// Get application by userId
-const GET_APPL_BY_USER_ID = `
-  SELECT
-    v.vehicle_num as "vehicleNum",
-    u.registrationCode as "sellerCode",
-    a.buyerCode as "buyerCode",
-    a.status as "status",
-    a.date_created as "dateCreated",
-    a.date_modified as "dateModified"
-  FROM application a
-  INNER JOIN user u ON a.usr_id = u.id
-  INNER JOIN vehicle v ON a.vehicle_id = v.id
-  WHERE a.id = $1::uuid
-`;
-function getApplByUser(userId) 
-{
-  DB_POOL.query(GET_APPL_BY_USER_ID, [userId], (err, result) => {
-    if (err) {
-      return callback(err, null);
-    }
-    return callback(null, result.rows);
-  });
-}
-
-// Get application information by vehicle number
-const GET_APPL_BY_VEHICLE = `
-  SELECT
-    v.vehicle_num as "vehicleNum",
-    u.registrationCode as "sellerCode",
-    a.buyerCode as "buyerCode",
-    a.status as "status",
-    a.date_created as "dateCreated",
-    a.date_modified as "dateModified"
-  FROM application a
-  INNER JOIN user u ON a.usr_id = u.id
-  INNER JOIN vehicle v ON a.vehicle_id = v.id
-  WHERE (v.vehicle_num = $1::character)
-`;
-
-function getApplByVehicle(vehicleNum, callback) {
-  DB_POOL.query(GET_APPL_BY_VEHICLE, [vehicleNum], (err, result) => {
-    if (err) {
-      return callback(err, null);
-    }
-    return callback(null, result.rows);
-  });
-}
-
 module.exports = {
-  getApplByStatus,
-  getApplByUser,
-  getApplByVehicle,
-  getPassByUsername
+  postNewVehicle,
+  getVehiclebyNum,
+  putVehicle
 }

@@ -1,8 +1,9 @@
   
 #!/usr/bin/env bash
+# https://web.dabbling.in/p/microservice-nodejs-postgresql
 
 # script directory
-sd=`dirname $0`
+sd=`dirname "$0"`
 
 # environment variable
 export POSTGRES_USER=postgres
@@ -36,3 +37,5 @@ echo "Creating tables..."
 $sd/../lib/create_all_tables.sh $DB_NAME
 
 echo "Database initialization complete."
+
+# read -s DROPTABLES
