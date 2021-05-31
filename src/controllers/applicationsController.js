@@ -46,7 +46,7 @@ function postNewApplication(req, data, callback)
 {
   let applObj = new Application();
   db_pool.query(postApplQuery, 
-    [req.body.usr_id, data.id/*vehicle id*/,
+    [req.body.usr_id, data/*vehicle id*/,
      req.body.sellerCode, req.body.buyerCode,
      applObj.status/*, applObj.date_created, applObj.date_modified*/], 
     (err, result) => {
