@@ -46,8 +46,7 @@ function postNewVehicle(req, callback)
 
 // Get vehicle by vehicle plates number
 const getVehicleQuery = `
-  SELECT
-    id
+  SELECT id
   FROM vehicles
   WHERE vehicle_num = $1
 `;
@@ -60,7 +59,7 @@ function getVehiclebyNum(vehicleNum, callback)
       if (err) {
         return callback(err, null);
       }
-      return callback(null, result.rows[0].id);
+      return callback(null, result);
   });
 }
 
