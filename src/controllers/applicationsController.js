@@ -42,20 +42,20 @@ const postApplQuery = `
 // VALUES(
 //   $1, $2, $3, $4, $5, $6, $7)
 
-function postNewApplication(req, data, callback) 
+function postNewApplication(req, vehicle_id, callback) 
 {
   let applObj = new Application();
   db_pool.query(postApplQuery, 
-    [req.body.usr_id, data/*vehicle id*/,
-     req.body.sellerCode, req.body.buyerCode,
-     applObj.status/*, applObj.date_created, applObj.date_modified*/], 
+    [req.body.usr_id, vehicle_id,
+     req.body.seller_code, req.body.buyer_code,
+     applObj.status/*, date_created, date_modified*/], 
     (err, result) => {
       console.log(err, result);
       if (err) {
         return callback(err, null);
       }
       else{
-        return callback(null, userObj.usrId);
+        return callback(null, result);
       }
   });
 }
