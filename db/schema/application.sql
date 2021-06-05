@@ -21,7 +21,8 @@ CREATE TABLE applications (
     REFERENCES users (id) MATCH SIMPLE
     ON DELETE CASCADE ON UPDATE CASCADE
 
-  -- CONSTRAINT app_vehicle_fkey FOREIGN KEY (vehicle_id) --TODO: ERROR:  relation "vehicles" does not exist
+--TODO: ERROR:  relation "vehicles" does not exist
+  -- CONSTRAINT app_vehicle_fkey FOREIGN KEY (vehicle_id)
   --   REFERENCES vehicles (id) MATCH SIMPLE
   --   ON DELETE CASCADE ON UPDATE CASCADE,
 

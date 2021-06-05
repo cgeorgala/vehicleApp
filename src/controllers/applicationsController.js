@@ -25,9 +25,8 @@ const db_pool = new Pool({
 class Application 
 {
   constructor() {
-    // this.date_created = Date.now();
-    // this.date_modified = Date.now();
-    this.status = 'In Progress';
+    // this.status = 'In Progress'; When is application In progress?
+    this.status = 'Pending';
   }
 }
 
@@ -61,22 +60,24 @@ function postNewApplication(req, vehicle_id, callback)
 }
 
 // Get application by status
-const GET_APPL_BY_STATUS = `
+const getApplByStatQuery = `
   SELECT
     v.vehicle_num as "vehicleNum",
-    u.registrationCode as "sellerCode",
-    a.buyerCode as "buyerCode",
+    a.seller_code as "sellerCode",
+    a.buyer_code as "buyerCode",
     a.status as "status",
     a.date_created as "dateCreated",
     a.date_modified as "dateModified"
-  FROM application a
-  INNER JOIN user u ON a.usr_id = u.id
-  INNER JOIN vehicle v ON a.vehicle_id = v.id
-  WHERE a.status = 'Pending'
+  FROM applications a
+  INNER JOIN vehicles v ON a.vehicle_id = v.id
+  WHERE a.status = $1
 `;
-function getApplByStatus(callback) 
+// If seller code was retrived from users.registrationCode
+// INNER JOIN users u ON a.usr_id = u.id
+// u.registrationCode as "sellerCode", 
+function getApplByStatus(applStatus, callback) 
 {
-  db_pool.query(GET_APPL_BY_STATUS, (err, result) => {
+  db_pool.query(getApplByStatQuery, [applStatus], (err, result) => {
     if (err) {
       return callback(err, null);
     }
@@ -85,22 +86,25 @@ function getApplByStatus(callback)
 }
 
 // Get application by userId
-const GET_APPL_BY_USER_ID = `
+const getApplByUserQuery = `
   SELECT
     v.vehicle_num as "vehicleNum",
-    u.registrationCode as "sellerCode",
-    a.buyerCode as "buyerCode",
+    a.seller_code as "sellerCode",
+    a.buyer_code as "buyerCode",
     a.status as "status",
     a.date_created as "dateCreated",
     a.date_modified as "dateModified"
-  FROM application a
-  INNER JOIN user u ON a.usr_id = u.id
-  INNER JOIN vehicle v ON a.vehicle_id = v.id
-  WHERE a.id = $1::uuid
+  FROM applications a
+  INNER JOIN vehicles v ON a.vehicle_id = v.id
+  WHERE a.usr_id = $1::uuid
 `;
-function getApplByUser(userId) 
+// If seller code was retrived from users.registrationCode
+// INNER JOIN users u ON a.usr_id = u.id
+// u.registrationCode as "sellerCode", 
+
+function getApplByUser(userId, callback) 
 {
-  db_pool.query(GET_APPL_BY_USER_ID, [userId], (err, result) => {
+  db_pool.query(getApplByUserQuery, [userId], (err, result) => {
     if (err) {
       return callback(err, null);
     }
@@ -112,16 +116,18 @@ function getApplByUser(userId)
 const GET_APPL_BY_VEHICLE = `
   SELECT
     v.vehicle_num as "vehicleNum",
-    u.registrationCode as "sellerCode",
+    a.seller_code as "sellerCode",
     a.buyerCode as "buyerCode",
     a.status as "status",
     a.date_created as "dateCreated",
     a.date_modified as "dateModified"
-  FROM application a
-  INNER JOIN user u ON a.usr_id = u.id
-  INNER JOIN vehicle v ON a.vehicle_id = v.id
+  FROM applications a 
+  INNER JOIN vehicles v ON a.vehicle_id = v.id
   WHERE (v.vehicle_num = $1::character)
 `;
+// If seller code was retrived from users.registrationCode
+// INNER JOIN users u ON a.usr_id = u.id
+// u.registrationCode as "sellerCode", 
 
 function getApplByVehicle(vehicleNum, callback) {
   db_pool.query(GET_APPL_BY_VEHICLE, [vehicleNum], (err, result) => {

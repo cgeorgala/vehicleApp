@@ -33,3 +33,13 @@ Available "GET" endpoints:
 Postgres
 * superuser/ postgres
 * port number the server listens on: 5432
+
+### Open issues ###
+* In table Applications: add foreign key vehicle_id from table vehicle which is now in comment
+* Search for existence before adding user in DB
+* Check if http or https is needed
+* How will config.json be visible in db?
+* Check if vehicle exists before adding in DB, so that DB doesn't crash
+* Response is not sent back when calling endpoint /addApplication
+* How to retrieve usr_id(ussid) to be filled in automatically? from frontend "active login"?
+* When will status be 'In progress' inside db? At the time an application is added in table it is 'Pending'
