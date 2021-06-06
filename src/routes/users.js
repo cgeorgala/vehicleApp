@@ -2,20 +2,17 @@ const express = require('express');
 const router = express.Router();
 const db = require('../controllers/usersController');
 
-// We will use a generic user-facing error for database query issues
-const GENERIC_BACKEND_EXTERNAL_ERROR = "There was a problem with the server.";
-
 //Register handling
 router.post('/addUser',(req,res)=>
 {
-    console.log(`Login POST handling`); 
+    console.log(`Register new user!`); 
     db.postNewUser(req,
         (err,data) => {
             if (err) {
-                return res.status(400).json({ "Failed to add new user, with error" : err.detail });
+                return res.json({ "Failed to add new user, with error" : err.detail });
             }
             else {
-                return res.status(200).json({ "User added successfully, with user id" : data });
+                return res.json({ "User added successfully, with user id" : data });
             }
     });
 });
@@ -23,18 +20,18 @@ router.post('/addUser',(req,res)=>
 //Login handling
 router.get('/loginUser',(req,res)=>
 {
-    console.log(`Login GET handling`);
+    console.log(`Login user!`);
     // res.render('login');
     db.getPassByUsername(req,
         (err,data) => {
             if (err) {
-                return res.status(400).json({ "Failed to login, with error" : err.detail });
+                return res.json({ "Failed to login, with error" : err.detail });
             }
             else{
                 if (data.status == 200) {
-                    return res.status(200).json("User login successfully");
+                    return res.json("User login successfully");
                 }else {
-                    return res.status(404).json("User login failed: wrong password");
+                    return res.json("User login failed: wrong password");
                 }
             }
     });

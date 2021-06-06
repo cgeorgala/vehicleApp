@@ -1,38 +1,47 @@
-const e = require('express');
 const express = require('express');
 const router = express.Router();
 const db = require('../controllers/vehiclesController');
 
-// Vehicles handling
+// Endpoint is not used directly. Add vehicle through applications.
 router.post('/addVehicle',(req,res)=>
 {
-    console.log(`Vehicle POST handling`);
+    console.log(`You shouldn't use /addVehicle!`);
 });
 
 
-// This is not actually used as endpoint
+// Endpoint is not used directly. Finding vehicle through applications.
 router.get('/findVehicle',(req,res)=>
 {
-    // res.send(`Find vehicle in vehicleTransferApp!`);
-    console.log(`Find vehicle GET handling!`);
+    console.log(`You shouldn't use /findVehicle!`);
     db.getVehiclebyNum(req.body.vehicleNum,
         (err,data) => {
         if (err) {
-            return res.status(400).json({ "Failed to find vehicle, with error" : err.detail });
+            return res.json({ "Failed to find vehicle, with error" : err.detail });
         }
         else{
-            if (data.length > 0){
-                return res.status(200).json({"Find vehicle successfully with id": data.rows[0].id});
+            if (data.rows.length > 0){
+                return res.json({"Find vehicle successfully with id": data.rows[0].id});
             }else{
-                return res.status(404).json("Vehicle number not found in DB!");
+                return res.json("Vehicle number not found in DB!");
             }
         }
     });
 });
 
+// Endpoint is not used directly. Modify vehicle through applications.
 router.put('/editVehicle',(req,res)=>
 {
-    console.log(`Vehicle PUT handling`);
+    console.log(`You shouldn't use /editVehicle!`);
+    vehId = req.body.vehicle_id;
+    db.updateVehicle(req, vehId,
+        (err,data) => {
+        if (err) {
+            return res.json({ "Failed to edit vehicle, with error" : err.detail });
+        }
+        else{
+            return res.json({"Edit vehicle successfully with id": vehId});
+        }
+    });
 });
 
 module.exports  = router;

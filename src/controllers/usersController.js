@@ -36,7 +36,7 @@ const db_pool = new Pool({
 //   END
 // `;
 
-// POST in users table, to register new user
+
 //TODO: check what happens in latestId when application Server restarts
 class User 
 {
@@ -55,6 +55,7 @@ class User
   }
 };
 
+// POST in users table, to register new user
 const postUsrQuery = `
   INSERT INTO users (
     user_id, first_name, last_name, 

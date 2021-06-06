@@ -35,11 +35,32 @@ Postgres
 * port number the server listens on: 5432
 
 ### Open issues ###
-* In table Applications: add foreign key vehicle_id from table vehicle which is now in comment
-* Search for existence before adding user in DB
+General
 * Check if http or https is needed
 * How will config.json be visible in db?
+Queries related
+* remove user_id from usersTable and from auto-incrementing
+* In table Applications: add foreign key vehicle_id from table vehicle which is now in comment
+* Search for existence before adding user in DB
 * Check if vehicle exists before adding in DB, so that DB doesn't crash
-* Response is not sent back when calling endpoint /addApplication
-* How to retrieve usr_id(ussid) to be filled in automatically? from frontend "active login"?
+* How to retrieve usr_id(ussid) to be filled in automatically when findApplicationBy? from frontend "active login"?
 * When will status be 'In progress' inside db? At the time an application is added in table it is 'Pending'
+* User can edit only his applications with status "Rejected"
+* Where will I perform validation of submitted information? 
+- In frontend for validity of digits/letters/length etc
+- In backend for duplication of username/email
+i.e. If I want to check password or plates validity, this should be done before submitting a form 
+
+For frontend NEW
+For citizen:
+* What happens during edit of an existing application:
+- first search by user to show all applications of current user
+- a list is send back and each application has an application_id (it can be hidden from user's display)
+- only one application at a time can be selected to edit
+- while submitting modified information, application_id needs to be sent back in response
+For employee:
+* How to review applications:
+- first search by status (pending) to show all pending applications
+- a list is send back and each application has an application_id (it can be hidden from user's display)
+- only one application at a time can be accepted/rejected
+- user can select only from Completed/Rejected and then send back status and applcication id in response

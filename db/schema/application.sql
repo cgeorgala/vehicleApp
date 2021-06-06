@@ -9,8 +9,8 @@ CREATE TABLE applications (
   seller_code      character varying(255) NOT NULL,
   buyer_code       character varying(255) NOT NULL,
   status           appl_status NOT NULL,
-  date_created     timestamp without time zone DEFAULT timezone('utc'::text, now()),
-  date_modified    timestamp without time zone DEFAULT timezone('utc'::text, now()),
+  date_created     timestamp without time zone DEFAULT timezone('eest'::text, now()),
+  date_modified    timestamp without time zone DEFAULT timezone('eest'::text, now()),
 
   -- Keys
   -- Primary Key

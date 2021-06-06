@@ -22,6 +22,7 @@ const db_pool = new Pool({
   max: 20,
 });
 
+// Adding new vehicle
 const postVehicleQuery = `
   INSERT INTO vehicles (
     vehicle_num, certif_date, type )
@@ -63,32 +64,46 @@ function getVehiclebyNum(vehicleNum, callback)
   });
 }
 
-// Edit vehicle
-const putVehicleQuery = `
-  SELECT
-    v.vehicle_num as "vehicleNum",
-    u.registrationCode as "sellerCode",
-    a.buyerCode as "buyerCode",
-    a.status as "status",
-    a.date_created as "dateCreated",
-    a.date_modified as "dateModified"
-  FROM application a
-  INNER JOIN user u ON a.usr_id = u.id
-  INNER JOIN vehicle v ON a.vehicle_id = v.id
-  WHERE a.status = 'Pending'
+// Get vehicle by vehicle id
+const getVehicleByIdQuery = `
+  SELECT *
+  FROM vehicles
+  WHERE id = $1
 `;
-function putVehicle(putVehicleQuery) 
+
+function getVehiclebyId(vehicleId, callback) 
 {
-  DB_POOL.query(GET_APPL_BY_STATUS, (err, result) => {
-    if (err) {
-      return callback(err, null);
-    }
-    return callback(null, result.rows);
+  db_pool.query(getVehicleByIdQuery, 
+    [vehicleId], 
+    (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      return callback(null, result.rows);
+  });
+}
+
+// Edit vehicle information
+const updateVehicleQuery = `
+  UPDATE vehicles
+  SET vehicle_num = $1, certif_date = $2, type = $3
+  WHERE id = $4::uuid
+`;
+function updateVehicle(req, vehId, callback) 
+{
+  db_pool.query(updateVehicleQuery, 
+    [req.body.vehicle_num, req.body.certif_date, req.body.vehicle_type, vehId],
+    (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      return callback(null, result);
   });
 }
 
 module.exports = {
   postNewVehicle,
   getVehiclebyNum,
-  putVehicle
+  getVehiclebyId,
+  updateVehicle
 }
