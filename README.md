@@ -52,6 +52,7 @@ Queries
 - In backend for duplication of username/email
 i.e. If I want to check password or plates validity, this should be done before submitting a form 
 * Encrypt password, and store it encrypted
+* Before checking password for login, check if user exists in db
 
 Frontend
 For citizen:

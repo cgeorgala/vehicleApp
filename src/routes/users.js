@@ -28,10 +28,16 @@ router.get('/loginUser',(req,res)=>
                 return res.json({ "Failed to login, with error" : err.detail });
             }
             else{
-                if (data.status == 200) {
+                if (data.status == 200)
+                {
                     return res.json("User login successfully");
-                }else {
+                }
+                else if (data.status == 404)
+                {
                     return res.json("User login failed: wrong password");
+                }
+                else{
+                    return res.json("User doesn't exist");
                 }
             }
     });
