@@ -38,20 +38,22 @@ Postgres
 General
 * Check if http or https is needed
 * How will config.json be visible in db?
-Queries related
+* Check volumes
+
+Queries
 * remove user_id from usersTable and from auto-incrementing
 * In table Applications: add foreign key vehicle_id from table vehicle which is now in comment
 * Search for existence before adding user in DB
 * Check if vehicle exists before adding in DB, so that DB doesn't crash
 * How to retrieve usr_id(ussid) to be filled in automatically when findApplicationBy? from frontend "active login"?
 * When will status be 'In progress' inside db? At the time an application is added in table it is 'Pending'
-* User can edit only his applications with status "Rejected"
 * Where will I perform validation of submitted information? 
 - In frontend for validity of digits/letters/length etc
 - In backend for duplication of username/email
 i.e. If I want to check password or plates validity, this should be done before submitting a form 
+* Encrypt password, and store it encrypted
 
-For frontend NEW
+Frontend
 For citizen:
 * What happens during edit of an existing application:
 - first search by user to show all applications of current user
