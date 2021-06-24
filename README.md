@@ -12,6 +12,7 @@
 ** Collections: applications, users, vehicles
 
 * npm init
+* npm install
 * npm start
 
 ### How to run ###
