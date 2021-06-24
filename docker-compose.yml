@@ -1,0 +1,26 @@
+version: "3.7"
+services: 
+  db:
+      image: postgres:13
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: vehicle_transfer_db
+          volumes:
+            - postgres_data:/var/lib/postgresql/data/
+  web:
+      image:
+      build:
+        context: .
+        dockerfile: nodeServer.Dockerfile
+      command: bash -c "wait-for-it db:5432 --npm start --host 0.0.0.0 --port 8000 --reload"
+      environment:
+        - DB_URL=postgresql://postgres:postgres@db/vehicle_transfer_db
+      ports:
+        - "8000:8000"
+      depends_on:
+        - db
+volumes:
+  postgres_data:
