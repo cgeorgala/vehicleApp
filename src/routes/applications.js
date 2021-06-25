@@ -84,15 +84,15 @@ function createNewApplication(request,callback)
                             }
                             else {
                                 console.log("createNewApplication-addNewApplication: success");
-                                response.status = '200';
-                                return callback(null,response);
+                                data.status = '200';
+                                return callback(null,data);
                             }
                         });
                     }else
                     {
                         console.log("createNewApplication fail: vehicle not found in DB");
-                        response.status = '404';
-                        return callback(null,response);
+                        result.status = '404';
+                        return callback(null,result);
                     }
                 }
             });
