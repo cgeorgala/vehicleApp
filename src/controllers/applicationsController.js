@@ -34,7 +34,7 @@ const postApplQuery = `
     usr_id, vehicle_id, seller_code, buyer_code, 
     status)
   VALUES(
-    $1, $2, $3, $4, $5 )
+    $1, $2, $3, $4, $5 ) RETURNING *
 `;
 
 function postNewApplication(req, vehicle_id, callback) 
@@ -50,6 +50,7 @@ function postNewApplication(req, vehicle_id, callback)
         return callback(err, null);
       }
       else{
+        console.log(result.rows);
         return callback(null, result);
       }
   });
@@ -64,7 +65,8 @@ const getApplByStatQuery = `
     a.buyer_code as "buyerCode",
     a.status as "status",
     a.date_created as "dateCreated",
-    a.date_modified as "dateModified"
+    a.date_modified as "dateModified",
+    v.type as "vehicleType"
   FROM applications a
   INNER JOIN vehicles v ON a.vehicle_id = v.id
   WHERE a.status = $1
@@ -107,6 +109,38 @@ function getApplByUser(userId, callback)
   });
 }
 
+
+// Get application by userId
+const getApplByIdQuery = `
+  SELECT
+    a.id as "applicationId",
+    v.vehicle_num as "vehicleNum",
+    a.seller_code as "sellerCode",
+    a.buyer_code as "buyerCode",
+    a.status as "status",
+    a.date_created as "dateCreated",
+    a.date_modified as "dateModified",
+    v.certif_date as "certificateDate",
+    v.type as "vehicleType",
+    u.first_name as "sellerFirstName",
+    u.last_name as "sellerLastName"
+  FROM applications a
+  INNER JOIN vehicles v ON a.vehicle_id = v.id
+  INNER JOIN users u ON u.id = a.usr_id
+  WHERE a.id = $1::uuid
+`;
+
+function getApplById(applicationId, callback) 
+{
+  db_pool.query(getApplByIdQuery, [applicationId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return callback(err, null);
+    }
+    return callback(null, result.rows);
+  });
+}
+
 // Get vehicleId by ApplicationId
 const getVehicleIdByApplId = `
   SELECT
@@ -132,7 +166,7 @@ function getVehicleIdByApplicationId(req, callback)
 const updateApplQuery = `
   UPDATE applications
   SET seller_code = $1, buyer_code = $2, status = $3, date_modified = $4
-  WHERE id = $5
+  WHERE id = $5  RETURNING *
 `;
 
 function editExistApplication(req, callback)
@@ -198,6 +232,7 @@ module.exports = {
   postNewApplication,
   getApplByStatus,
   getApplByUser,
+  getApplById,
   getVehicleIdByApplicationId,
   editExistApplication,
   editApplicationStatus,

@@ -12,13 +12,14 @@ router.post('/addUser',(req,res)=>
                 return res.json({ "Failed to add new user, with error" : err.detail });
             }
             else {
-                return res.json({ "User added successfully, with user id" : data });
+                console.log(data);
+                return res.json( {"success": data} );
             }
     });
 });
 
 //Login handling
-router.get('/loginUser',(req,res)=>
+router.post('/loginUser',(req,res)=>
 {
     console.log(`Login user!`);
     // res.render('login');
@@ -30,14 +31,17 @@ router.get('/loginUser',(req,res)=>
             else{
                 if (data.status == 200)
                 {
-                    return res.json("User login successfully");
+                    const user = data.rows[0];
+                    console.log(user);
+                    delete user.password;
+                    return res.json(user);
                 }
                 else if (data.status == 404)
                 {
-                    return res.json("User login failed: wrong password");
+                    return res.status(data.status).send({message:"User login failed: wrong password"});
                 }
                 else{
-                    return res.json("User doesn't exist");
+                    return res.status(data.status).send({message:"User doesn't exist"});
                 }
             }
     });

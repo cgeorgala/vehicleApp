@@ -48,10 +48,11 @@ const postUsrQuery = `
 
 function postNewUser(req, callback) 
 {
+  console.log(req.body)
   db_pool.query(postUsrQuery, 
     [req.body.first_name, req.body.last_name, 
     req.body.email, req.body.username, req.body.password, 
-    req.body.role, req.body.position, req.body.registrationCode], 
+    req.body.role, req.body.position, req.body.registrationCode],
     (err, result) => {
       console.log(err, result);
       if (err) {
@@ -67,15 +68,17 @@ function postNewUser(req, callback)
 //TODO: add user authentication
 const getPassQuery = `
   SELECT
-    password
+   username, id, password, first_name, last_name, role, registrationcode
   FROM users
   WHERE username = $1
 `;
 function getPassByUsername(req, callback)
 {
+  console.log(req.body.username, req.body.password);
   db_pool.query(getPassQuery, 
     [req.body.username], 
     (err, result) => {
+      console.log(err)
       if (err) {
         return callback(err, null);
       }
