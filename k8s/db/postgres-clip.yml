@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pg-cluster-ip-service
+  name: db
 spec:
   type: ClusterIP
   selector:

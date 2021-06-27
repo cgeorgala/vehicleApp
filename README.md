@@ -108,7 +108,7 @@ or
 
 # Launch an interactive shell inside our container
 * docker exec -it postgres-docker psql -U postgres
-* docker exec -it 91ffbda369d1  psql -U postgres
+* docker exec -it dd0bf3181f58  psql -U postgres
 
 * \l --> list all databases
 * \c vehicle_db --> connect to vehicle_db
@@ -142,7 +142,7 @@ docker volume rm vehiclestransferapp_postgres_data
 * docker-compose up --build -d --> build again the images if something has changed
 
 # check postgres tables through postgres container
-* psql -p 4321 -d docker -U postgres
+* psql -p 5432 -d docker -U postgres
 \d
 \dt
 select * from users
@@ -168,6 +168,15 @@ curl --location --request POST 'http://localhost:8000/users/addUser' \
 netstat -anp | grep 5432      
 unix  2      [ ACC ]     STREAM     LISTENING     19616    -                   /var/run/postgresql/.s.PGSQL.5432
 Solution: sudo service postgresql stop
+ 
+# create postgres docker image with custom initialization
+docker build -f postgres.Dockerfile . --tag postges-docker-img
+
+# Create container from specific image
+docker run --name postgres-container -p 5432:5432 -d postges-docker-img
+
+# Get into container
+docker exec -it postgres-container psql -U postgres 
  
 # k8s
 sudo snap install microk8s --classic
@@ -203,12 +212,55 @@ pg-cluster-ip-service   ClusterIP   10.152.183.168   <none>        5432/TCP   7m
 
 psql -h 10.152.183.168 -U postgres -p 5432
 
+k get pods
+k logs postgresdb-5899c75bc8-ldwmb
+
 k delete service pg-cluster-ip-service
 k delete deployment postgresdb
 k delete persistentvolumeclaim pg-pvc-claim
 k delete configmap postgres-config
 
 k create configmap pg-init-script --from-literal=init.sql="$(curl -fsSL https://bitbucket.org/christinageo/vehiclestransferapp/src/master/db/init.sql)"  --> configmap/pg-init-script created
+k delete configmap pg-init-script
 
+## Upload images in github instead of dockerhub
+docker build -t ghcr.io/cgeorgala/postgres:latest -f postgres.Dockerfile . 
+docker build -t ghcr.io/cgeorgala/node-server:latest -f nodeServer.Dockerfile .
 
+docker images
+sudo vim github-image-repo.txt --> add github token here
+cat /docker-image-repo_token.txt | docker login ghcr.io -u cgeorgala --password-stdin  --> login
+
+## push to github repo
+docker push ghcr.io/cgeorgala/postgres:latest
+docker push ghcr.io/cgeorgala/node-server:latest
+
+## Create secret for private packages in github
+echo cgeorgala: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 | base64
+Y2dlb3JnYWxhOmdocF84TWRNUjBPazdDSUcxeEdHcDN6NTZkWks0NGllVGEzakRVNjkK
+
+echo '{"auths":{"ghcr.io":{"auth":"Y2dlb3JnYWxhOmdocF84TWRNUjBPazdDSUcxeEdHcDN6NTZkWks0NGllVGEzakRVNjkK"}}}' | microk8s.kubectl create secret generic dockerconfigjson-github-com --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=/dev/stdin
+secret/dockerconfigjson-github-com created
+
+## Apply all yml files from k8s folder
+You should install Ingress Nginx with command:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.46.0/deploy/static/provider/cloud/deploy.yaml
+After that you can use the following command to start in main folder:
+k apply -f k8s/node-server
+k delete -f k8s/node-server
+
+#Check persistentvolume in k8s
+k get pv
+
+# Check status of applying yml files to download docker image
+k get pods
+k describe pod node-server-deployment-75b49c4b49-snjtl
+
+# Check if application is up and running
+k get services
+get node-server-ip and run validate with ip/port, 
+i.e curl --location --request POST 'http://10.152.183.249:8000/applications/addApplication' \
+
+## check with postgres service ip
+psql -h 10.152.183.76 -U postgres -p 5432
 
