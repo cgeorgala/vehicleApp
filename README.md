@@ -215,7 +215,7 @@ psql -h 10.152.183.168 -U postgres -p 5432
 k get pods
 k logs postgresdb-5899c75bc8-ldwmb
 
-k delete service pg-cluster-ip-service
+k delete service pg-cluster-ip-service --> k delete service db
 k delete deployment postgresdb
 k delete persistentvolumeclaim pg-pvc-claim
 k delete configmap postgres-config
@@ -263,4 +263,14 @@ i.e curl --location --request POST 'http://10.152.183.249:8000/applications/addA
 
 ## check with postgres service ip
 psql -h 10.152.183.76 -U postgres -p 5432
+
+## For mail server, used nodeMailer
+sender is always: vehicle.app.hua@gmail.com / password: vehicleapp123
+receiver is always: vehicle.user.hua@gmail.com / password: vehicleuser123
+curl --location --request GET 'http://localhost:5000/notifyUser' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'email=vehicle.user.hua@gmail.com' \
+--data-urlencode 'status=Accepted' \
+--data-urlencode 'vehicle=IKI1445'
+
 
