@@ -8,10 +8,6 @@ spec:
     matchLabels:
       component: postgresdb
       app: db
-  init:
-    scriptSource:
-      configMap:
-        name: pg-init-script
   template:
     metadata:
       labels:
@@ -19,7 +15,7 @@ spec:
         app: db
     spec:
       volumes:
-        - name:  pg-db-persistent-volume-storage
+        - name:  pg-database-persistent-volume-storage
           persistentVolumeClaim:
             claimName: pg-pvc-claim
       containers:
@@ -32,7 +28,7 @@ spec:
             - configMapRef:
                 name: postgres-config
           volumeMounts:
-            - name: pg-db-persistent-volume-storage
+            - name: pg-database-persistent-volume-storage
               mountPath: /var/lib/postgresql/data
               subPath: postgres
       imagePullSecrets:
