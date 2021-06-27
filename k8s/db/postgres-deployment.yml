@@ -8,6 +8,10 @@ spec:
     matchLabels:
       component: postgresdb
       app: db
+  init:
+    scriptSource:
+      configMap:
+        name: pg-init-script
   template:
     metadata:
       labels:
@@ -15,12 +19,12 @@ spec:
         app: db
     spec:
       volumes:
-        - name:  pg-database-persistent-volume-storage
+        - name:  pg-db-persistent-volume-storage
           persistentVolumeClaim:
             claimName: pg-pvc-claim
       containers:
         - name: postgres
-          image: "postgres:13"
+          image: 'ghcr.io/cgeorgala/postgres:latest'
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432
@@ -28,6 +32,8 @@ spec:
             - configMapRef:
                 name: postgres-config
           volumeMounts:
-            - name: pg-database-persistent-volume-storage
+            - name: pg-db-persistent-volume-storage
               mountPath: /var/lib/postgresql/data
               subPath: postgres
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
