@@ -7,6 +7,9 @@
 node_modules/
 dist/
 
+# Dockerfiles
+#nodeServer.Dockerfile
+
 # Compiled Java class files
 *.class
 
