@@ -4,6 +4,9 @@ const router = express.Router();
 const a_db = require('../controllers/applicationsController');
 const v_db = require('../controllers/vehiclesController');
 
+const fetch = require("node-fetch");
+const { email }  = require('../mail-conf.json');
+
 // Create new vehicle during creation of new application
 function setNewVehicle(request, callback) {
     v_db.postNewVehicle(request,
@@ -278,6 +281,58 @@ function modifyApplicationStatus(request, callback) {
         });
 }
 
+// Function used to send POST request to mail server
+async function sendMailNotificationReq( data ) {
+    try {
+        const mailInfo    = {};
+        mailInfo['email']= data.userEmail;
+        mailInfo['status']= data.status;
+        mailInfo['vehicle']= data.vehicleNum;
+
+        // Create Object to string
+        let mailInfoBody = JSON.stringify( mailInfo );
+
+        const requestOptions    = {};
+        const mailPostUrl   = `http://${email.host}:5000/notifyUser`;
+        requestOptions.method  = 'POST';
+        requestOptions.headers = {'Content-Type':'application/json'};
+        requestOptions.body = mailInfoBody;
+
+        // Use fetch to access HTTP requests/responses
+        const response = await fetch(mailPostUrl, requestOptions);
+        // console.log(response);
+        return response.status;
+    }
+    catch(err){
+        console.error(err.message);
+    }
+}
+
+// When application status change is successful, send email to user
+function sendChangeStatusEmail(request)
+{
+    console.log({ "sendChangeStatusEmail: for applId=": request.body.applId });
+    a_db.getEmailInfoByApplId(request.body.applId,
+        (err, data) => {
+            if (err) {
+                console.log({"getEmailInfoByApplId: error ":err});
+            }
+            else {
+                console.log("getEmailInfoByApplId: success");
+                if (data.length > 0)
+                {
+                    console.log({ "sendChangeStatusEmail: get data=": data[0] });
+                    sendMailNotificationReq(data[0])
+                    .then(value => console.log({ "send email with status=": value}))
+                    .catch (error => console.log({ "email not send with error=": error}));
+                }
+                else {
+                    console.log("sendChangeStatusEmail: no available data");
+                }
+            }
+        });
+}
+
 router.put('/editApplicationStatus', (req, res) => {
     console.log(`Edit application status`);
     modifyApplicationStatus(req,
@@ -288,6 +343,8 @@ router.put('/editApplicationStatus', (req, res) => {
             }
             else {
                 console.log("editApplicationStatus: success");
+                // Send email to user
+                sendChangeStatusEmail(req);
                 return res.json({ "Application status modified successfully": data });
             }
         });

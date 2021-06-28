@@ -228,6 +228,29 @@ function getApplicationByVehicle(req, callback)  //not used yet
   });
 }
 
+// Get application by userId
+const getEmailInfoByApplIdQuery = `
+  SELECT
+    a.status as "status",
+    v.vehicle_num as "vehicleNum",
+    u.email as "userEmail"
+  FROM applications a
+  INNER JOIN vehicles v ON a.vehicle_id = v.id
+  INNER JOIN users u ON u.id = a.usr_id
+  WHERE a.id = $1::uuid
+`;
+
+function getEmailInfoByApplId(applicationId, callback) 
+{
+  db_pool.query(getEmailInfoByApplIdQuery, [applicationId], (err, result) => {
+    if (err) {
+      console.log(err);
+      return callback(err, null);
+    }
+    return callback(null, result.rows);
+  });
+}
+
 module.exports = {
   postNewApplication,
   getApplByStatus,
@@ -236,5 +259,6 @@ module.exports = {
   getVehicleIdByApplicationId,
   editExistApplication,
   editApplicationStatus,
+  getEmailInfoByApplId,
   getApplicationByVehicle //not used yet
 }

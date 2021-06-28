@@ -39,7 +39,12 @@ app.get('/notifyUser/', (req,res) =>
             from: 'vehicle.app.hua@gmail.com',
             to: `${mail}`,
             subject: 'Vehicle transfer application status changed!',
-            html: `<p>Your application status for vehicle number <i><b>${veh_num}<b></i>, changed to: <i><b>${status}</b></i><p>`
+            html: `<p>Hi, <br/><br/>
+                      Your application status for vehicle number 
+                      <i><b>${veh_num}<b></i>, changed to: 
+                      <i><b>${status}</b></i> <br/><br/>
+                      On behalf of VehicleTransferApp
+                    <p>`
         }
         // Send email
         transporter.sendMail(email_options, function(err,data)
