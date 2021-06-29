@@ -38,12 +38,12 @@ app.post('/notifyUser/', (req,res) =>
         let email_options = {
             from: 'vehicle.app.hua@gmail.com',
             to: `${mail}`,
-            subject: 'Vehicle transfer application status changed!',
-            html: `<p>Hi, <br/><br/>
-                      Your application status for vehicle number 
-                      <i><b>${veh_num}<b></i>, changed to: 
+            subject: 'Ενημέρωση για την αίτηση μεταβίβασης αυτοκινήτου',
+            html: `<p>Αγαπητέ πολίτη, <br/><br/>
+                      Η αίτηση μεταβίβασης του αυτοκινήτου με αριθμό κυκλοφορίας 
+                      <i><b>${veh_num}<b></i>, άλλαξε κατάσταση και έγινε: 
                       <i><b>${status}</b></i> <br/><br/>
-                      On behalf of VehicleTransferApp team
+                      Εκ μέρους της ομάδας μεταβιβάσεων αυτοκινήτων
                     <p>`
         }
         // Send email
