@@ -12,7 +12,7 @@ services:
   web:
       build:
         context: .
-        dockerfile: nodeServer.Dockerfile
+        dockerfile: ./server/nodeServer.Dockerfile
       command: npm start
       environment:
         - DB_URL=postgresql://postgres:postgres@db/vehicle_transfer_db
