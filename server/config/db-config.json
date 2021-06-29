@@ -1,6 +1,6 @@
 {
     "db": {
-      "host": "db",
+      "host": "localhost",
       "user": "postgres",
       "database": "vehicle_transfer_db"
     }

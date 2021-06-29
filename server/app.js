@@ -7,7 +7,7 @@ const pg = require('pg');
 const bodyParser = require('body-parser');
 
 // Project configuration
-const config = require('./src/config.json');
+const config = require('./config/db-config.json');
 
 const router = express.Router();
 const app = express();
@@ -29,10 +29,10 @@ app.use(express.urlencoded({ extended: true })); //TODO: extended true or false?
 app.use(express.json());
 
 //Routes
-app.use('/', require('./src/routes/index'));
-app.use('/users', require('./src/routes/users'));
-app.use('/applications', require('./src/routes/applications'));
-app.use('/vehicles', require('./src/routes/vehicles'));
+app.use('/', require('./routes/index'));
+app.use('/users', require('./routes/users'));
+app.use('/applications', require('./routes/applications'));
+app.use('/vehicles', require('./routes/vehicles'));
 
 // Swagger
 app.use(

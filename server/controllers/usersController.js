@@ -4,11 +4,11 @@ const fs = require('fs');
 const path = require('path');
 
 const { Pool } = require('pg');
-const { db }  = require('../config.json');
+const { db }  = require('../config/db-config.json');
 
 // Getting password from db-pass.txt file
 // This file should be gitignored and chmod chmod protected
-const DB_PASS_FILEPATH = path.resolve(path.join(__dirname, './../db-pass.txt'));
+const DB_PASS_FILEPATH = path.resolve(path.join(__dirname, './../config/db-pass.txt'));
 const PG_PASSWORD = fs.readFileSync(DB_PASS_FILEPATH, 'utf8').trim();
 
 

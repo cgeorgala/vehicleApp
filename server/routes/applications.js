@@ -5,7 +5,7 @@ const a_db = require('../controllers/applicationsController');
 const v_db = require('../controllers/vehiclesController');
 
 const fetch = require("node-fetch");
-const { email }  = require('../mail-conf.json');
+const { email }  = require('../config/mail-conf.json');
 
 // Create new vehicle during creation of new application
 function setNewVehicle(request, callback) {
