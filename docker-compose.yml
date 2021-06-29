@@ -23,7 +23,7 @@ services:
   mail:
       build:
         context: ./email
-        dockerfile: email/mailServer.Dockerfile
+        dockerfile: mailServer.Dockerfile
       command: npm start
       ports:
         - "5000:5000"
