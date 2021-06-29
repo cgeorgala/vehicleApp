@@ -7,7 +7,7 @@ FROM node:15
 WORKDIR /server
 
 # Copy main server files
-COPY ./server ./
+COPY ./ ./
 
 # Execute commands inside the container
 RUN npm install

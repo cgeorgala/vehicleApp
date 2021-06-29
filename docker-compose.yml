@@ -2,8 +2,8 @@ version: "3"
 services: 
   db:
       build:
-        context: .
-        dockerfile: ./db/postgres.Dockerfile
+        context: ./db
+        dockerfile: postgres.Dockerfile
       ports:
         - "5432:5432"
       restart: always
@@ -11,8 +11,8 @@ services:
         - postgres_data:/var/lib/postgresql/data/
   web:
       build:
-        context: .
-        dockerfile: ./server/nodeServer.Dockerfile
+        context: ./server
+        dockerfile: nodeServer.Dockerfile
       command: npm start
       environment:
         - DB_URL=postgresql://postgres:postgres@db/vehicle_transfer_db
@@ -22,8 +22,8 @@ services:
         - db
   mail:
       build:
-        context: .
-        dockerfile: ./email/mailServer.Dockerfile
+        context: ./email
+        dockerfile: email/mailServer.Dockerfile
       command: npm start
       ports:
         - "5000:5000"

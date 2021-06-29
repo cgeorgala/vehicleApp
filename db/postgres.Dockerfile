@@ -12,4 +12,4 @@ ENV POSTGRES_PASSWORD postgres
 ENV POSTGRES_DB vehicle_transfer_db
 
 # Copy initialization file
-COPY ./db/init.sql /docker-entrypoint-initdb.d/
+COPY ./init.sql /docker-entrypoint-initdb.d/

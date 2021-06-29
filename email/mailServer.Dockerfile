@@ -7,7 +7,7 @@ FROM node:15
 WORKDIR /email
 
 # Copy main server files
-COPY ./email ./
+COPY ./ ./
 
 # Execute commands inside the container
 RUN npm install
