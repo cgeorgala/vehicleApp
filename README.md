@@ -117,6 +117,10 @@ or
 * SELECT * FROM applications; --> show contents BUT run first \d table_name
 * SELECT * FROM vehicles;
 
+# Mail server
+* docker build -f mailServer.Dockerfile . --tag mail-server
+* docker run --name mail-server-container -p 5000:5000 -d mail-server
+
 ##### IMPORTANT ####
 In order app container to talk with db container, in config.json of application  use 
 {
@@ -177,6 +181,7 @@ docker run --name postgres-container -p 5432:5432 -d postges-docker-img
 
 # Get into container
 docker exec -it postgres-container psql -U postgres 
+docker exec -it vehiclestransferapp_mail bash
  
 # k8s
 sudo snap install microk8s --classic
@@ -262,9 +267,10 @@ get node-server-ip and run validate with ip/port,
 i.e curl --location --request POST 'http://10.152.183.249:8000/applications/addApplication' \
 
 ## check with postgres service ip
-psql -h 10.152.183.76 -U postgres -p 5432
+psql -h 10.152.183.206 -U postgres -p 5432
 
-## For mail server, used nodeMailer
+## For mail server, used nodeMailerexus
+
 sender is always: vehicle.app.hua@gmail.com / password: vehicleapp123
 receiver is always: vehicle.user.hua@gmail.com / password: vehicleuser123
 curl --location --request GET 'http://localhost:5000/notifyUser' \

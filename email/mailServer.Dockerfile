@@ -4,10 +4,10 @@ FROM node:15
 # Set environment varibles
 
 # Change working directory
-WORKDIR /app
+WORKDIR /email
 
 # Copy main server files
-COPY ./ ./
+COPY ./email ./
 
 # Execute commands inside the container
 RUN npm install

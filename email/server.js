@@ -27,7 +27,7 @@ let transporter = nodemailer.createTransport(
     }
 });
 
-app.get('/notifyUser/', (req,res) =>
+app.post('/notifyUser/', (req,res) =>
 {
     if (req.body)
     {
@@ -43,7 +43,7 @@ app.get('/notifyUser/', (req,res) =>
                       Your application status for vehicle number 
                       <i><b>${veh_num}<b></i>, changed to: 
                       <i><b>${status}</b></i> <br/><br/>
-                      On behalf of VehicleTransferApp
+                      On behalf of VehicleTransferApp team
                     <p>`
         }
         // Send email
