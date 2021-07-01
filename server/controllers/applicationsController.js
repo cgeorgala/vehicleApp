@@ -24,7 +24,6 @@ const db_pool = new Pool({
 class Application 
 {
   constructor() {
-    // this.status = 'In Progress'; When is application In progress?
     this.status = 'Pending';
   }
 }

@@ -22,7 +22,7 @@ CREATE TABLE users(
   CONSTRAINT user_pkey PRIMARY KEY (id),
 
   -- Unique
-  -- CONSTRAINT user_umail_key UNIQUE (email),
+  CONSTRAINT user_umail_key UNIQUE (email),
   CONSTRAINT user_uname_key UNIQUE (username)
 );
 
