@@ -2,281 +2,199 @@
 
 ### Introduction ###
 
-* Vehicle Transfer Application
+* Vehicle Transfer Application | Back-end, postgres and email components 
 
 ### Setup ###
 
-* Manually Install node.js
-* Manually Install postgres
-** Database: vehicleTranfer
-** Collections: applications, users, vehicles
-
-* npm init
+# Install and initialize node
 * npm install
 * npm start
+* separate package.json files for node-server and mail-server
 
-### How to run ###
+# Install and initialize postgres
+* Database: vehicle_transfer_db
+* Collections: applications, users, vehicles
+
+
+### Run in development mode ###
 
 Check all possible endpoints in swagger: 
 * http://localhost:8000/api-docs/#/
+* http://localhost:8000/api
 
-Available "GET" endpoints:
-* Home page http://localhost:8000/
-* Register page http://localhost:8000/users/addUser
-* Login page http://localhost:8000/users/loginUser
-* http://localhost:8000/users/logoutUser
-* http://localhost:8000/vehicles/findVehicle
-* http://localhost:8000/applications/findApplicationByStatus
-* http://localhost:8000/applications/findApplicationByUser
+## Users endpoints
+* http://localhost:8000/api/users/addUser
+* http://localhost:8000/api/users/loginUser
+
+## Applications endpoints
+* http://localhost:8000/api/applications/addApplication
+* http://localhost:8000/api/applications/findApplicationByStatus
+* http://localhost:8000/api/applications/findApplicationById
+* http://localhost:8000/api/applications/findApplicationByUser
+* http://localhost:8000/api/applications/editApplication
+* http://localhost:8000/api/applications/editApplication
+
+## Vehicles endpoints
+* Vehicle endpoints are not accessed directly, but supported through applications endpoints. 
+* http://localhost:8000/api/vehicles/addVehicle
+* http://localhost:8000/api/vehicles/findVehicle
+* http://localhost:8000/api/vehicles/editVehicle
+
+## Email server endpoint
+* /notifyUser
+* Require: nodemailer
+* Service: gmail
+* Node server triggers email with required information through endpoint
+
+* Sender: vehicle.app.hua@gmail.com
+* Receiver: citizen's registration email
+
+## Accounts created
+* vehicle.app.hua@gmail.com / password: vehicleapp123
+* vehicle.user.hua@gmail.com / password: vehicleuser123
+* vehicle.user2.hua@gmail.com / password: vehicleuser123
+
+# Postgres #
+* username: postgres, password: postges
+* port number: 5432
 
 
-### Useful information ###
-Postgres
-* superuser/ postgres
-* port number the server listens on: 5432
+### Run the app in production mode ###
 
-### Open issues ###
-Docker
-* Do I need wait-for-it?
+# Node-server #
 
-General
-* Check if http or https is needed
-* How will config.json be visible in db?
-* Check volumes
-
-Queries
-* remove user_id from usersTable and from auto-incrementing
-* In table Applications: add foreign key vehicle_id from table vehicle which is now in comment
-* Search for existence before adding user in DB
-* Check if vehicle exists before adding in DB, so that DB doesn't crash
-* How to retrieve usr_id(ussid) to be filled in automatically when findApplicationBy? from frontend "active login"?
-* When will status be 'In progress' inside db? At the time an application is added in table it is 'Pending'
-* Where will I perform validation of submitted information? 
-- In frontend for validity of digits/letters/length etc
-- In backend for duplication of username/email
-i.e. If I want to check password or plates validity, this should be done before submitting a form 
-* Encrypt password, and store it encrypted
-* Before checking password for login, check if user exists in db
-
-Frontend
-For citizen:
-* What happens during edit of an existing application:
-- first search by user to show all applications of current user
-- a list is send back and each application has an application_id (it can be hidden from user's display)
-- only one application at a time can be selected to edit
-- while submitting modified information, application_id needs to be sent back in response
-For employee:
-* How to review applications:
-- first search by status (pending) to show all pending applications
-- a list is send back and each application has an application_id (it can be hidden from user's display)
-- only one application at a time can be accepted/rejected
-- user can select only from Completed/Rejected and then send back status and applcication id in response
-
-### Dockerize ###
-* docker pull node
-
-# Create docker image from specific Dockerfile and tag it with a name
+## Create docker image from specific Dockerfile and tag it with a name
 * docker build -f nodeServer.Dockerfile . --tag node-server
 
-# Create container from specific image
+## Create container from specific image
 * docker run --name node-server-container -p 8000:8000 -d node-server
 
-# Check that localhost:8000 is reachable
+## Check that localhost:8000 is reachable
 * curl localhost:8000
 
-# Get into container
+## Get into container
 * docker exec -it node-server-container bash
 
-# Stop running container
-* docker stop a9f0469aa1b3 -t 0
+# Postgres #
 
-# Remove stopped container
-docker rm node-server-container
-
-# Remove docker image
-docker image rm node-server
-or
-* docker rmi <repo:tag>
-
-# Postgres
-* docker pull postgres
-* there is is postgres docker image in dockerhub
+## Create container from specific image
 * docker run --name postgres-docker -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
 
-# Launch the psql utility
+## Launch the psql utility
 * psql -d postgres -h localhost ip 5432 -U postgres
 
-# Launch an interactive shell inside our container
+## Launch an interactive shell inside our container
 * docker exec -it postgres-docker psql -U postgres
-* docker exec -it dd0bf3181f58  psql -U postgres
-
 * \l --> list all databases
 * \c vehicle_db --> connect to vehicle_db
 * \d --> show all tables
 * \d applications --> show applications table schema
-* SELECT * FROM applications; --> show contents BUT run first \d table_name
+* SELECT * FROM users;
+* SELECT * FROM applications;
 * SELECT * FROM vehicles;
 
-# Mail server
+# Mail server #
+
+## Create docker image from specific Dockerfile and tag it with a name
 * docker build -f mailServer.Dockerfile . --tag mail-server
+
+## Create container from specific image
 * docker run --name mail-server-container -p 5000:5000 -d mail-server
 
-##### IMPORTANT ####
-In order app container to talk with db container, in config.json of application  use 
-{
-    "db": {
-      "host": "localhost", <---- use "db" for containers
-      "user": "postgres",
-      "database": "vehicle_transfer_db"
-    }
-  }
+### Dockercompose ###
 
-#Inspect the volume
-docker volume inspect vehiclestransferapp_postgres_data
-ls /var/lib/docker/volumes/postgres-data/_data/
+* docker-compose up --build -d
+* docker-compose.yml files
+** service db for postgres
+** service web for node server
+** service mail for mail-server
 
-#delete a volume to get changes in volumes
-docker volume rm vehiclestransferapp_postgres_data
-
-## Dockercompose in order not to create manually separately docker containers
-
-* docker-compose up -d
-* docker-compose down --> stop and deletes containers
-
-* docker-compose up --build -d --> build again the images if something has changed
-
-# check postgres tables through postgres container
-* psql -p 5432 -d docker -U postgres
-\d
-\dt
-select * from users
-
-# GET
-* curl localhost:8000/
-
-#POST user with curl command
-curl --location --request POST 'http://localhost:8000/users/addUser' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'first_name=Chris' \
---data-urlencode 'last_name=Geo' \
---data-urlencode 'email=itp1234@hua.com' \
---data-urlencode 'username=chrischris' \
---data-urlencode 'password=1234' \
---data-urlencode 'role=citizen' \
---data-urlencode 'registrationCode=123456'
-
-# Check volumes
-* docker volume ls ---> vehiclestransferapp_postgres_data
-
-## Problem proxy: listen tcp 0.0.0.0:5432: bind: address already in use.
-netstat -anp | grep 5432      
+## Solve Problem 
+* proxy: listen tcp 0.0.0.0:5432: bind: address already in use.
+* netstat -anp | grep 5432      
 unix  2      [ ACC ]     STREAM     LISTENING     19616    -                   /var/run/postgresql/.s.PGSQL.5432
-Solution: sudo service postgresql stop
+* Solved by running: sudo service postgresql stop
  
-# create postgres docker image with custom initialization
-docker build -f postgres.Dockerfile . --tag postges-docker-img
+### k8s ###
 
-# Create container from specific image
-docker run --name postgres-container -p 5432:5432 -d postges-docker-img
+## Build images to be uploaded in Github
+* docker build -t ghcr.io/cgeorgala/postgres:latest -f postgres.Dockerfile . 
+* docker build -t ghcr.io/cgeorgala/node-server:latest -f nodeServer.Dockerfile .
+* docker build -t ghcr.io/cgeorgala/mail-server:latest -f mailServer.Dockerfile .
 
-# Get into container
-docker exec -it postgres-container psql -U postgres 
-docker exec -it vehiclestransferapp_mail bash
- 
-# k8s
-sudo snap install microk8s --classic
-sudo usermod -a -G microk8s $USER
-sudo chown -f -R $USER ~/.kube
-su - $USER
+## Handle github token
+* sudo vim github-image-repo.txt --> add github token here
+* cat /docker-image-repo_token.txt | docker login ghcr.io -u cgeorgala --password-stdin  --> login
 
-microk8s.enable dashboard dns storage ingress
-microk8s.status
+## Upload images in Github repo
+* docker push ghcr.io/cgeorgala/postgres:latest
+* docker push ghcr.io/cgeorgala/node-server:latest
+* docker push ghcr.io/cgeorgala/mail-server:latest
 
-sudo ufw allow in on eth0 && sudo ufw allow out on eth0
-sudo ufw default allow routed
+## Create secret
+* Used for private packages in github
+* Name: dockerconfigjson-github-com
+* echo cgeorgala:<token> | base64 --> creates <encoded_token>
 
-alias k=microk8s.kubectl
-k get pods
-k get nodes
-k get nodes -o wide
-k get pods -o wide
-k get deployments
-k get pvc -o wide
-k get services
+* echo '{"auths":{"ghcr.io":{"auth":"<encoded_token>"}}}' | microk8s.kubectl create secret generic dockerconfigjson-github-com --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=/dev/stdin
 
-k create -f postgres-configmap.yaml     --> configmap/postgres-config created
-k create -f postgres-pvc.yml            --> persistentvolumeclaim/pg-pvc-claim created
-k create -f postgres-deployment.yml     --> deployment.apps/postgresdb created
-k create -f postgres-clip.yml           --> service/pg-cluster-ip-service created
+* Same name is used in deployment yml files, section imagePullSecrets/name
 
-## Connect to PostgreSQL database, once it is running.
-k get services
+## Create alias for kubectl
+* alias k=microk8s.kubectl
+
+## Apply yml files for every component
+* k apply -f k8s/db
+* k apply -f k8s/node-server
+* k apply -f k8s/mail-server
+
+## Delete if needed
+* k delete -f k8s/db
+* k delete -f k8s/node-server
+* k delete -f k8s/mail-server
+
+
+### Useful k8s commands ###
+
+# Check status in k8s #
+* k get nodes -o wide
+* k get pods -o wide
+* k get deployments
+* k get pvc -o wide
+* k get services
+* k logs -f <pod_name>
+
+## Connect to postgres, once it is running
+* k get services
 NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
 kubernetes              ClusterIP   10.152.183.1     <none>        443/TCP    7h15m
 pg-cluster-ip-service   ClusterIP   10.152.183.168   <none>        5432/TCP   7m5s
 
-psql -h 10.152.183.168 -U postgres -p 5432
+* psql -h 10.152.183.168 -U postgres -p 5432
 
-k get pods
-k logs postgresdb-5899c75bc8-ldwmb
+## App URL
+* https://kspyrou.cloudns.cl/login
 
-k delete service pg-cluster-ip-service --> k delete service db
-k delete deployment postgresdb
-k delete persistentvolumeclaim pg-pvc-claim
-k delete configmap postgres-config
+##Backup URL
+* http://christinageo.cloudns.cl/login
 
-k create configmap pg-init-script --from-literal=init.sql="$(curl -fsSL https://bitbucket.org/christinageo/vehiclestransferapp/src/master/db/init.sql)"  --> configmap/pg-init-script created
-k delete configmap pg-init-script
+## DNS hosting: ClouDNS
 
-## Upload images in github instead of dockerhub
-docker build -t ghcr.io/cgeorgala/postgres:latest -f postgres.Dockerfile . 
-docker build -t ghcr.io/cgeorgala/node-server:latest -f nodeServer.Dockerfile .
+## Created SSL certificate in zeroSSL
 
-docker images
-sudo vim github-image-repo.txt --> add github token here
-cat /docker-image-repo_token.txt | docker login ghcr.io -u cgeorgala --password-stdin  --> login
+### User accounts ###
 
-## push to github repo
-docker push ghcr.io/cgeorgala/postgres:latest
-docker push ghcr.io/cgeorgala/node-server:latest
+## Employee 
+* username: mariap | password: maria123
+* email: vehicle.app.hua@gmail.com | password: vehicleapp123 
 
-## Create secret for private packages in github
-echo cgeorgala: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 | base64
-Y2dlb3JnYWxhOmdocF84TWRNUjBPazdDSUcxeEdHcDN6NTZkWks0NGllVGEzakRVNjkK
 
-echo '{"auths":{"ghcr.io":{"auth":"Y2dlb3JnYWxhOmdocF84TWRNUjBPazdDSUcxeEdHcDN6NTZkWks0NGllVGEzakRVNjkK"}}}' | microk8s.kubectl create secret generic dockerconfigjson-github-com --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=/dev/stdin
-secret/dockerconfigjson-github-com created
+## Citizens 
+* User1
+* username: ellenk | password: ellen123
+* email: vehicle.user.hua@gmail.com | password: vehicleuser123
 
-## Apply all yml files from k8s folder
-You should install Ingress Nginx with command:
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.46.0/deploy/static/provider/cloud/deploy.yaml
-After that you can use the following command to start in main folder:
-k apply -f k8s/node-server
-k delete -f k8s/node-server
-
-#Check persistentvolume in k8s
-k get pv
-
-# Check status of applying yml files to download docker image
-k get pods
-k describe pod node-server-deployment-75b49c4b49-snjtl
-
-# Check if application is up and running
-k get services
-get node-server-ip and run validate with ip/port, 
-i.e curl --location --request POST 'http://10.152.183.249:8000/applications/addApplication' \
-
-## check with postgres service ip
-psql -h 10.152.183.206 -U postgres -p 5432
-
-## For mail server, used nodeMailerexus
-
-sender is always: vehicle.app.hua@gmail.com / password: vehicleapp123
-receiver is always: vehicle.user.hua@gmail.com / password: vehicleuser123
-curl --location --request GET 'http://localhost:5000/notifyUser' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'email=vehicle.user.hua@gmail.com' \
---data-urlencode 'status=Accepted' \
---data-urlencode 'vehicle=IKI1445'
-
+* User2
+* username: giannis | password: giannis123
+* email: vehicle.user2.hua@gmail.com | password: vehicleuser123
 
