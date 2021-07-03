@@ -6,7 +6,7 @@
       "description": "This is an application that will perform transfer of vehicles between users"
     },
     "host": "localhost:8000",
-    "basePath": "/",
+    "basePath": "/api/",
     "tags": [
       {
         "name": "Users",
@@ -44,14 +44,14 @@
             "200": {
               "description": "Successful operation"
             },
-            "405": {
+            "404": {
               "description": "Invalid Input"
             }
           }
         }
       },
       "/loginUser": {
-        "get": {
+        "post": {
           "tags": ["Users"],
           "summary": "Login user in the system",
           "consumes": ["application/json"],
@@ -74,8 +74,11 @@
             "200": {
               "description": "Successful operation"
             },
-            "400": {
+            "404": {
               "description": "Invalid username and/or password"
+            },
+            "400": {
+              "description": "User doesn't exist"
             }
           }
         }
@@ -113,8 +116,8 @@
             "200": {
               "description": "Successful operation"
             },
-            "405": {
-              "description": "Invalid Input"
+            "400": {
+              "description": "Create of new application failed"
             }
           }
         }
@@ -129,7 +132,7 @@
             "name":"status",
             "in":"query",
             "type":"string",
-            "enum":["In Progress","Pending", "Completed", "Rejected"],
+            "enum":["Pending", "Completed", "Rejected"],
             "default":"Pending",
             "description":"Search application based on status",
             "required":true
@@ -145,18 +148,24 @@
               }
             },
             "400":{
-              "description": "Invalid search key"
+              "description": "Failed to find application"
             }
           }
         }
       },
-      "/findApplicationbyUser": {
+      "/findApplicationbyId": {
         "get": {
           "tags": ["Applications"],
-          "summary": "Find applications of current user",
+          "summary": "Get application info by application Id",
           "consumes": ["application/json"],
           "produces": ["application/json"],
-          "parameters":[],
+          "parameters":[
+          {
+            "name":"applicationID",
+            "in":"query",
+            "type":"integer",
+            "description":"Application id to search with"
+          }],
           "responses": {
             "200": {
               "description": "Successful operation",
@@ -168,7 +177,36 @@
               }
             },
             "400":{
-              "description": "Invalid search id"
+              "description": "No application found with this id"
+            }
+          }
+        }
+      },
+      "/findApplicationbyUser": {
+        "get": {
+          "tags": ["Applications"],
+          "summary": "Find applications of current user",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[
+          {
+            "name":"userID",
+            "in":"query",
+            "type":"integer",
+            "description":"User id to search with"
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "schema": {
+                "type":"array",
+                "items":{
+                  "$ref": "#/definitions/Application"
+                }
+              }
+            },
+            "400":{
+              "description": "No application found for this user"
             }
           }
         }
@@ -192,8 +230,40 @@
             "200": {
               "description": "Successful operation"
             },
-            "405": {
-              "description": "Invalid Input"
+            "400": {
+              "description": "Edit Application Failed"
+            }
+          }
+        }
+      },
+      "/editApplicationStatus": {
+        "put": {
+          "tags": ["Applications"],
+          "summary": "Edit status of an application",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters":[
+            {
+              "name":"applicationID",
+              "in":"query",
+              "type":"integer",
+              "description":"Application id to search with"
+            },
+            {
+            "name":"status",
+            "in":"query",
+            "type":"string",
+            "enum":["Pending", "Completed", "Rejected"],
+            "default":"Pending",
+            "description":"New status of the application",
+            "required":true
+          }],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "400": {
+              "description": "Edit Application status Failed"
             }
           }
         }
@@ -207,7 +277,7 @@
           "parameters":[{
             "in":"body",
             "name":"body",
-            "description":"Vehicle that will be added to the system",
+            "description":"Do not use directly! Operation is performed only through application",
             "required":true,
             "schema": {
                 "$ref": "#/definitions/Vehicle"
@@ -217,7 +287,7 @@
             "200": {
               "description": "Successful operation"
             },
-            "405": {
+            "400": {
               "description": "Invalid Input"
             }
           }
@@ -233,7 +303,7 @@
             "name":"vehicle number",
             "in":"query",
             "type":"string",
-            "description":"Search a vehicle based on its number",
+            "description":"Do not use directly! Operation is performed only through application",
             "required":true
           }],
           "responses": {
@@ -258,7 +328,7 @@
           "parameters":[{
             "in":"body",
             "name":"body",
-            "description":"Vehicle that will be updated in the system",
+            "description":"Do not use directly! Operation is performed only through application",
             "required":true,
             "schema": {
                 "$ref": "#/definitions/Vehicle"
@@ -277,17 +347,17 @@
     },
     "definitions": {
       "User": {
-        "required": ["name", "surname", "email", "username", "password"],
+        "required": ["first_name", "last_name", "email", "username", "password"],
         "properties": {
           "userID": {
             "type": "integer",
             "format": "int32",
             "uniqueItems": true
           },
-          "name": {
+          "first_name": {
             "type": "string"
           },
-          "surname": {
+          "last_name": {
             "type": "string"
           },
           "email": {
@@ -322,17 +392,13 @@
             "format": "int32",
             "uniqueItems": true
           },
-          "employeeID": {
+          "userID": {
             "type": "integer",
             "format": "int32"
           },
-          "dateCreated": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dateModified": {
-            "type": "string",
-            "format": "date-time"
+          "vehicleID": {
+            "type": "integer",
+            "format": "int32"
           },
           "sellerCode": {
             "type": "integer",
@@ -342,13 +408,18 @@
             "type": "integer",
             "format": "int64"
           },
-          "vehicleNum": {
-            "type": "string"
-          },
           "status": {
             "type": "string",
             "description": "Status of application",
-            "enum": ["In Progress", "Pending", "Completed", "Rejected"]
+            "enum": ["Pending", "Completed", "Rejected"]
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateModified": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
