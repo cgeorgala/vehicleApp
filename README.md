@@ -1,22 +1,22 @@
 # README #
 
-### Introduction ###
+# Introduction #
 
 * Vehicle Transfer Application | Back-end, postgres and email components 
 
-### Setup ###
+# Setup #
 
-# Install and initialize node
+## Install and initialize node
 * npm install
 * npm start
 * separate package.json files for node-server and mail-server
 
-# Install and initialize postgres
+## Install and initialize postgres
 * Database: vehicle_transfer_db
 * Collections: applications, users, vehicles
 
 
-### Run in development mode ###
+# Run in development mode #
 
 Check all possible endpoints in swagger: 
 * http://localhost:8000/api-docs/#/
@@ -59,7 +59,7 @@ Check all possible endpoints in swagger:
 * port number: 5432
 
 
-### Run the app in production mode ###
+# Run the app in production mode #
 
 # Node-server #
 
@@ -101,7 +101,7 @@ Check all possible endpoints in swagger:
 ## Create container from specific image
 * docker run --name mail-server-container -p 5000:5000 -d mail-server
 
-### Dockercompose ###
+# Dockercompose #
 
 * docker-compose up --build -d
 * docker-compose.yml files
@@ -115,7 +115,7 @@ Check all possible endpoints in swagger:
 unix  2      [ ACC ]     STREAM     LISTENING     19616    -                   /var/run/postgresql/.s.PGSQL.5432
 * Solved by running: sudo service postgresql stop
  
-### k8s ###
+# k8s #
 
 ## Build images to be uploaded in Github
 * docker build -t ghcr.io/cgeorgala/postgres:latest -f postgres.Dockerfile . 
@@ -154,7 +154,7 @@ unix  2      [ ACC ]     STREAM     LISTENING     19616    -                   /
 * k delete -f k8s/mail-server
 
 
-### Useful k8s commands ###
+# Useful k8s commands #
 
 # Check status in k8s #
 * k get nodes -o wide
@@ -182,7 +182,7 @@ pg-cluster-ip-service   ClusterIP   10.152.183.168   <none>        5432/TCP   7m
 
 ## Created SSL certificate in zeroSSL
 
-### User accounts ###
+# User accounts #
 
 ## Employee 
 * username: mariap | password: maria123
