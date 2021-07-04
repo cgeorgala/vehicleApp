@@ -153,10 +153,9 @@ unix  2      [ ACC ]     STREAM     LISTENING     19616    -                   /
 * k delete -f k8s/node-server
 * k delete -f k8s/mail-server
 
-
 # Useful k8s commands #
 
-# Check status in k8s #
+## Check status in k8s
 * k get nodes -o wide
 * k get pods -o wide
 * k get deployments
@@ -172,15 +171,17 @@ pg-cluster-ip-service   ClusterIP   10.152.183.168   <none>        5432/TCP   7m
 
 * psql -h 10.152.183.168 -U postgres -p 5432
 
-## App URL
-* https://kspyrou.cloudns.cl/login
+## Application URL
+* https://kspyrou.cloudns.cl/
 
-##Backup URL
-* http://christinageo.cloudns.cl/login
+## Backup URL
+* https://christinageo.cloudns.cl/
 
-## DNS hosting: ClouDNS
+## DNS hosting
+* ClouDNS
 
-## Created SSL certificate in zeroSSL
+## SSL certificate
+* zeroSSL
 
 # User accounts #
 
