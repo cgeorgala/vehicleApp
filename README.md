@@ -32,7 +32,6 @@ Check all possible endpoints in swagger:
 * http://localhost:8000/api/applications/findApplicationById
 * http://localhost:8000/api/applications/findApplicationByUser
 * http://localhost:8000/api/applications/editApplication
-* http://localhost:8000/api/applications/editApplication
 
 ## Vehicles endpoints
 * Vehicle endpoints are not accessed directly, but supported through applications endpoints. 
