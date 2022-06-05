@@ -76,6 +76,9 @@ Check all possible endpoints in swagger:
 
 # Postgres #
 
+## Create docker image
+* docker build -f postgres.Dockerfile -t postgres-docker .
+
 ## Create container from specific image
 * docker run --name postgres-docker -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
 
